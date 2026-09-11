@@ -6,172 +6,154 @@ Full-stack Node.js application for logging, viewing, and celebrating sports achi
 
 ## Project Structure
 
-```
+```text
 sportlog/
-├── public/                     # ── Frontend (served by Express) ──
-│   ├── index.html              #    Main SPA shell
-│   ├── css/
-│   │   └── styles.css          #    All styles & responsive layout
-│   └── js/
-│       └── app.js              #    Client-side logic (calls real API)
-│
-├── src/                        # ── Backend ──
-│   ├── server.js               #    Express entry point
-│   ├── db.js                   #    SQLite schema & connection
-│   ├── config/
-│   │   └── index.js            #    Centralised env config
+├── public/                     # Frontend served by Express
+│   ├── index.html
+│   ├── css/styles.css
+│   └── js/app.js
+├── src/                        # Backend
+│   ├── server.js
+│   ├── db.js
+│   ├── config/index.js
 │   ├── middleware/
-│   │   ├── auth.js             #    JWT sign / verify / authRequired
-│   │   └── errorHandler.js     #    404 + global error handler
 │   └── routes/
-│       ├── auth.js             #    POST /auth/signup, login, GET /me
-│       ├── achievements.js     #    CRUD /achievements
-│       ├── stats.js            #    GET /stats
-│       └── health.js           #    GET /health
-│
-├── scripts/                    # ── Utilities ──
-│   ├── seed.js                 #    Insert demo user + sample data
-│   └── reset-db.js             #    Wipe & recreate database
-│
-├── data/                       #    SQLite DB lives here (auto-created)
-│
-├── .env.example                #    Environment variable template
-├── .gitignore
-├── .dockerignore
+├── scripts/                    # Seed/reset utilities
+├── test/                       # Automated API tests
+├── data/                       # SQLite DB (created automatically)
+├── .env.example
 ├── package.json
-├── Procfile                    #    Heroku / Railway / Render
-├── render.yaml                 #    Render one-click blueprint
-├── docker-compose.yml          #    Docker one-command launch
-└── Dockerfile                  #    Production container image
+├── package-lock.json
+├── START-WINDOWS.bat           # Windows one-click launcher
+├── Dockerfile
+├── docker-compose.yml
+└── render.yaml
 ```
 
 ---
 
-## Quick Start (Local)
+## Quick Start — Windows / VS Code
 
-```bash
-# 1  Clone & enter the project
-cd sportlog
+**Prerequisites:** Node.js 18+ installed.
 
-# 2  Copy environment config
-cp .env.example .env
-#    → Edit .env and set a strong JWT_SECRET
+1. Open the **repository root** in VS Code — the folder containing `package.json`.
+2. Open a terminal in that folder.
+3. Run:
 
-# 3  Install dependencies
-npm install
-
-# 4  (Optional) Seed demo data
-npm run seed
-#    → Creates demo user: RA2111003010001 / Demo@1234
-
-# 5  Start the server
-npm run dev        # development (auto-reload)
-# or
-npm start          # production
+```powershell
+npm.cmd install
+npm.cmd start
 ```
 
-Open **http://localhost:3000**
+4. Open **http://localhost:3000** in your browser.
+
+### Important
+
+- Do **not** double-click `public/index.html`.
+- Do **not** use VS Code Live Server for this full-stack app.
+- Keep the terminal running while using SportLog.
+- If PowerShell blocks `npm.ps1`, use `npm.cmd` as shown above. The project scripts themselves are Windows-compatible.
+
+You can also double-click **`START-WINDOWS.bat`** from the repository root. It installs dependencies when needed and starts the server.
+
+---
+
+## Quick Start — macOS / Linux
+
+```bash
+npm install
+npm start
+```
+
+Open **http://localhost:3000**.
+
+For development with automatic restart:
+
+```bash
+npm run dev
+```
+
+---
+
+## Optional environment configuration
+
+Copy `.env.example` to `.env` if you want to customize settings. Local development works with the built-in development JWT fallback. For production, always set a strong `JWT_SECRET` of at least 32 characters.
 
 ---
 
 ## API Endpoints
 
-| Method   | Path                 | Auth | Description                    |
-|----------|----------------------|------|--------------------------------|
-| `GET`    | `/health`            | —    | Server health check            |
-| `POST`   | `/auth/signup`       | —    | Create account                 |
-| `POST`   | `/auth/login`        | —    | Sign in → JWT token            |
-| `GET`    | `/auth/me`           | ✔    | Current user profile           |
-| `GET`    | `/achievements`      | —    | List all (with query filters)  |
-| `GET`    | `/achievements/:id`  | —    | Single achievement             |
-| `POST`   | `/achievements`      | ✔    | Create achievement             |
-| `PUT`    | `/achievements/:id`  | ✔    | Update achievement             |
-| `DELETE` | `/achievements/:id`  | ✔    | Delete achievement             |
-| `GET`    | `/stats`             | —    | Aggregated stats & leaderboard |
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/health` | — | Server health check |
+| `POST` | `/auth/signup` | — | Create account |
+| `POST` | `/auth/login` | — | Sign in and receive JWT |
+| `GET` | `/auth/me` | ✔ | Current user profile |
+| `GET` | `/achievements` | — | List achievements with filters |
+| `GET` | `/achievements/:id` | — | Get one achievement |
+| `POST` | `/achievements` | ✔ | Create achievement |
+| `PUT` | `/achievements/:id` | ✔ | Update achievement |
+| `DELETE` | `/achievements/:id` | ✔ | Delete achievement |
+| `GET` | `/stats` | — | Aggregated statistics |
 
-**Query filters** for `GET /achievements`: `student_name`, `sport`, `level`, `class`
+Achievement filters: `student_name`, `sport`, `level`, `class`.
 
-**Auth header**: `Authorization: Bearer <token>`
+Authentication uses `Authorization: Bearer <token>`.
+
+---
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm start` | Start the production server |
+| `npm run dev` | Start with nodemon |
+| `npm run check` | Run Node syntax/static checks |
+| `npm test` | Run automated API tests |
+| `npm run seed` | Insert demo user and sample data |
+| `npm run reset-db` | Reset the SQLite database |
 
 ---
 
 ## Deploy with Docker
 
 ```bash
-# One command
 docker compose up -d --build
-
-# View logs
 docker compose logs -f
-
-# Stop
 docker compose down
 ```
 
-The SQLite database is persisted in a Docker volume (`sportlog-data`).
+The SQLite database is persisted in the Docker volume configured by the compose file.
 
 ---
 
 ## Deploy to Render
 
-1. Push to a GitHub repo
-2. Go to [Render Dashboard](https://dashboard.render.com)
-3. **New → Blueprint** → connect repo → it reads `render.yaml` automatically
-4. Deploy — Render provisions a persistent disk for the SQLite DB
-
----
-
-## Deploy to Railway / Heroku
-
-Both platforms detect the `Procfile` automatically.
-
-```bash
-# Railway
-railway up
-
-# Heroku
-heroku create sportlog
-heroku config:set JWT_SECRET=$(openssl rand -hex 32)
-git push heroku main
-```
-
-> **Note**: Heroku's ephemeral filesystem means the SQLite DB resets on each deploy. For persistent Heroku hosting, swap SQLite for PostgreSQL.
+Connect the repository to Render and use the included `render.yaml` blueprint. Set a strong `JWT_SECRET` in the production environment.
 
 ---
 
 ## Environment Variables
 
-| Variable               | Default                  | Description                       |
-|------------------------|--------------------------|-----------------------------------|
-| `PORT`                 | `3000`                   | Server port                       |
-| `NODE_ENV`             | `development`            | `development` or `production`     |
-| `JWT_SECRET`           | *(fallback for dev)*     | **Change in production!**         |
-| `JWT_EXPIRES_IN`       | `7d`                     | Token expiry                      |
-| `DB_PATH`              | `./data/sportlog.db`     | SQLite file location              |
-| `RATE_LIMIT_WINDOW_MS` | `900000` (15 min)       | Rate limit window                 |
-| `RATE_LIMIT_MAX`       | `100`                    | Max requests per window           |
-| `CORS_ORIGINS`         | *(empty = allow all)*    | Comma-separated allowed origins   |
-
----
-
-## Scripts
-
-| Command            | Description                          |
-|--------------------|--------------------------------------|
-| `npm start`        | Start in production mode             |
-| `npm run dev`      | Start with nodemon (auto-reload)     |
-| `npm run seed`     | Insert demo user + sample data       |
-| `npm run reset-db` | Wipe database and recreate schema    |
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `3000` | Server port |
+| `NODE_ENV` | `development` | Runtime environment |
+| `JWT_SECRET` | development fallback | Required at 32+ characters in production |
+| `JWT_EXPIRES_IN` | `7d` | JWT expiry |
+| `DB_PATH` | `./data/sportlog.db` | SQLite database path |
+| `RATE_LIMIT_WINDOW_MS` | `900000` | Rate-limit window |
+| `RATE_LIMIT_MAX` | `100` | Requests per window |
+| `CORS_ORIGINS` | empty | Comma-separated allowed origins |
 
 ---
 
 ## Tech Stack
 
-| Layer      | Technology                                    |
-|------------|-----------------------------------------------|
-| Frontend   | Vanilla HTML / CSS / JS (single-page app)     |
-| Backend    | Node.js, Express 4                            |
-| Database   | SQLite via better-sqlite3                     |
-| Auth       | JWT (jsonwebtoken) + bcrypt                   |
-| Security   | helmet, cors, express-rate-limit, compression |
-| Container  | Docker + Docker Compose                       |
+- Frontend: Vanilla HTML, CSS and JavaScript
+- Backend: Node.js + Express
+- Database: SQLite via better-sqlite3
+- Authentication: JWT + bcrypt
+- Security: Helmet, CORS, rate limiting and compression
+- Testing: Node's built-in test runner
+- CI: GitHub Actions
