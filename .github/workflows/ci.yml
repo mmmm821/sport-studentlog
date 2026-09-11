@@ -28,10 +28,13 @@ jobs:
         run: npm run check
 
       - name: API and unit tests
+        env:
+          JWT_SECRET: ci-test-secret-at-least-32-characters-long
         run: npm test
 
       - name: Start application
         env:
+          NODE_ENV: production
           JWT_SECRET: ci-test-secret-at-least-32-characters-long
           PORT: 3000
         run: |
