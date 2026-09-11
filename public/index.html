@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SportLog — SRM Student Achievement Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,400&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="screen-landing" class="screen">
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-top">
+        <div class="auth-logo">SPORTLOG</div>
+        <div class="auth-tagline">SRM Institute of Science and Technology</div>
+      </div>
+      <div class="auth-body">
+        <div class="landing-hero">Student Achievement Portal</div>
+        <p class="landing-sub">Log, celebrate, and explore sports achievements across all disciplines at SRMIST.</p>
+        <div class="landing-sports">
+          <span class="sport-chip">🏏 Cricket</span><span class="sport-chip">⚽ Football</span>
+          <span class="sport-chip">🏃 100m Dash</span><span class="sport-chip">🏃 500m Dash</span>
+          <span class="sport-chip">🥏 Shot Put</span><span class="sport-chip">🦘 Long Jump</span>
+          <span class="sport-chip">♟️ Chess</span><span class="sport-chip">🎯 Carrom</span>
+          <span class="sport-chip">🏐 Volleyball</span><span class="sport-chip">🏑 Hockey</span>
+        </div>
+        <div class="landing-btns">
+          <button class="btn btn-signup" onclick="goto('screen-signup')">CREATE ACCOUNT</button>
+          <button class="btn btn-login"  onclick="goto('screen-login')">SIGN IN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN UP -->
+<div id="screen-signup" class="screen">
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-top"><div class="auth-logo">SPORTLOG</div><div class="auth-tagline">Create Your Account</div></div>
+      <div class="auth-body">
+        <div class="auth-title">Create Your Account</div>
+        <div class="auth-desc">Use your SRMIST email and password to sign up instantly.</div>
+        <div class="fg">
+          <label>Full Name</label>
+          <input id="su_name" type="text" placeholder="e.g. Arjun Sharma" autocomplete="name"/>
+          <span class="hint">No character limit</span>
+        </div>
+        <div class="fg">
+          <label>Registration Number</label>
+          <input id="su_reg" type="text" placeholder="15-character reg. number" maxlength="15" autocomplete="username" oninput="updateRegCounter()"/>
+          <span class="hint" id="reg_counter">0 / 15 characters</span>
+        </div>
+        <div class="fg">
+          <label>College Email ID</label>
+          <input id="su_email" type="email" placeholder="yourname@srmist.edu.in" autocomplete="email" oninput="validateEmailLive()"/>
+          <span class="hint" id="email_hint">Must end with @srmist.edu.in</span>
+        </div>
+        <div class="fg">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input id="su_pw" type="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength()"/>
+            <button class="pw-toggle" type="button" onclick="togglePw('su_pw',this)">👁</button>
+          </div>
+          <div class="pw-strength"><div class="pw-strength-fill" id="pw_fill" style="width:0"></div></div>
+          <span class="hint" id="pw_strength_label">Enter a password</span>
+        </div>
+        <div class="fg">
+          <label>Confirm Password</label>
+          <div class="pw-wrap">
+            <input id="su_pw2" type="password" placeholder="Repeat your password" autocomplete="new-password"/>
+            <button class="pw-toggle" type="button" onclick="togglePw('su_pw2',this)">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btn_createacct" onclick="createAccount()">CREATE ACCOUNT</button>
+        <button class="btn btn-ghost" onclick="goto('screen-landing')">← Back</button>
+        <div class="switch-link">Already have an account? <a onclick="goto('screen-login')">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen">
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-top"><div class="auth-logo">SPORTLOG</div><div class="auth-tagline">Sign In to Your Account</div></div>
+      <div class="auth-body">
+        <div class="auth-title">Welcome Back</div>
+        <div class="auth-desc">Use your registration number and password</div>
+        <div class="fg">
+          <label>Registration Number</label>
+          <input id="li_reg" type="text" placeholder="15-character reg. number" autocomplete="username" maxlength="15" oninput="this.value=this.value.toUpperCase()"/>
+        </div>
+        <div class="fg">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input id="li_pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+            <button class="pw-toggle" type="button" onclick="togglePw('li_pw',this)">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">SIGN IN</button>
+        <button class="btn btn-ghost" onclick="goto('screen-landing')">← Back</button>
+        <div class="switch-link">Don't have an account? <a onclick="goto('screen-signup')">Sign up</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div id="screen-portal" class="screen">
+  <nav class="portal-nav">
+    <div class="nav-logo" onclick="showPortalTab('home')">
+      <div class="nav-logo-icon">🏆</div>
+      <span class="nav-logo-text">SPORT<span>LOG</span></span>
+    </div>
+    <div class="nav-center">
+      <button class="nav-tab active" data-tab="home"        onclick="showPortalTab('home')">Home</button>
+      <button class="nav-tab"        data-tab="entry"       onclick="showPortalTab('entry')">Add Entry</button>
+      <button class="nav-tab"        data-tab="view"        onclick="showPortalTab('view')">View All</button>
+      <button class="nav-tab"        data-tab="leaderboard" onclick="showPortalTab('leaderboard')">Stats</button>
+    </div>
+    <div class="nav-user">
+      <div class="nav-user-info">
+        <div class="nav-user-name" id="nav_name">—</div>
+        <div class="nav-user-reg"  id="nav_reg">—</div>
+      </div>
+      <button class="btn-logout" onclick="logout()">LOGOUT</button>
+    </div>
+  </nav>
+
+  <div class="portal-hero">
+    <div class="hero-glow"></div>
+    <h1>STUDENT<br>SPORTS<br>PORTAL</h1>
+    <div class="portal-hero-sub">Record · Celebrate · Inspire</div>
+    <div class="hero-sports">
+      <span class="hero-chip" onclick="filterSport('Cricket')">🏏 Cricket</span>
+      <span class="hero-chip" onclick="filterSport('Football')">⚽ Football</span>
+      <span class="hero-chip" onclick="filterSport('100m Dash')">🏃 100m Dash</span>
+      <span class="hero-chip" onclick="filterSport('500m Dash')">🏃 500m Dash</span>
+      <span class="hero-chip" onclick="filterSport('Shot Put')">🥏 Shot Put</span>
+      <span class="hero-chip" onclick="filterSport('Long Jump')">🦘 Long Jump</span>
+      <span class="hero-chip" onclick="filterSport('Chess')">♟️ Chess</span>
+      <span class="hero-chip" onclick="filterSport('Carrom')">🎯 Carrom</span>
+      <span class="hero-chip" onclick="filterSport('Volleyball')">🏐 Volleyball</span>
+      <span class="hero-chip" onclick="filterSport('Hockey')">🏑 Hockey</span>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="pStatTotal">—</div><div class="stat-lbl">Total Achievements</div></div>
+    <div class="stat-card"><div class="stat-num" id="pStatStudents">—</div><div class="stat-lbl">Athletes Logged</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-lbl">Sports Covered</div></div>
+  </div>
+
+  <div class="portal-content">
+
+    <!-- HOME -->
+    <div class="psec active" id="psec-home">
+      <div class="sec-title">Sports Overview</div>
+      <p class="sec-desc">Click any sport to view its achievements</p>
+      <div class="sports-grid" id="sportsGrid"></div>
+    </div>
+
+    <!-- ENTRY -->
+    <div class="psec" id="psec-entry">
+      <div class="sec-title">Add Achievement</div>
+      <p class="sec-desc">Record a student's sports accomplishment in the portal</p>
+      <div class="form-grid">
+        <div class="fg"><label>Student Name *</label><input id="f_name" type="text" placeholder="Full name of student"/></div>
+        <div class="fg"><label>Registration Number *</label><input id="f_roll" type="text" placeholder="e.g. RA2111003010001" maxlength="15"/></div>
+        <div class="fg">
+          <label>Batch Year *</label>
+          <select id="f_batch">
+            <option value="">— Select Batch —</option>
+            <option>2018-2022</option><option>2019-2023</option><option>2020-2024</option>
+            <option>2021-2025</option><option>2022-2026</option><option>2023-2027</option>
+            <option>2024-2028</option><option>2025-2029</option><option>2026-2030</option>
+            <option>2027-2031</option><option>2028-2032</option>
+          </select>
+        </div>
+        <div class="fg"><label>Class / Section *</label><input id="f_class" type="text" placeholder="e.g. CSE-A, ECE-B, 12-A"/></div>
+        <div class="fg">
+          <label>Competition Level *</label>
+          <select id="f_level">
+            <option value="">— Select Level —</option>
+            <option>School Level</option><option>College Level</option><option>Inter-College</option>
+            <option>District Level</option><option>State Level</option><option>National Level</option>
+            <option>International Level</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Sport *</label>
+          <select id="f_sport" onchange="onSportChange()">
+            <option value="">— Select Sport —</option>
+            <option value="Cricket">🏏 Cricket</option>
+            <option value="Football">⚽ Football</option>
+            <option value="100m Dash">🏃 100m Dash</option>
+            <option value="500m Dash">🏃 500m Dash</option>
+            <option value="Shot Put">🥏 Shot Put</option>
+            <option value="Long Jump">🦘 Long Jump</option>
+            <option value="Chess">♟️ Chess</option>
+            <option value="Carrom">🎯 Carrom</option>
+            <option value="Volleyball">🏐 Volleyball</option>
+            <option value="Hockey">🏑 Hockey</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Category *</label>
+          <select id="f_category">
+            <option value="">— Select Category —</option>
+            <option>Individual</option><option>Team</option><option>Mixed</option>
+          </select>
+        </div>
+        <div class="fg full"><label>Achievement *</label><input id="f_achievement" type="text" placeholder="e.g. Won gold medal in state tournament"/></div>
+        <div class="fg">
+          <label>Position / Medal</label>
+          <select id="f_position">
+            <option value="">Participant / None</option>
+            <option>1st Place / Gold</option><option>2nd Place / Silver</option><option>3rd Place / Bronze</option>
+            <option>4th Place</option><option>Semi-Finalist</option><option>Finalist</option>
+            <option>Best Player</option><option>Most Valuable Player</option>
+          </select>
+        </div>
+        <div class="fg"><label id="scoreLbl">Score / Result</label><input id="f_score" type="text" placeholder="e.g. 10.8s, 150 runs, 6.5m"/></div>
+        <div class="fg"><label>Event Name</label><input id="f_event" type="text" placeholder="e.g. Annual Sports Day 2024"/></div>
+        <div class="fg"><label>Event Date</label><input id="f_date" type="date"/></div>
+        <div class="fg full"><label>Additional Details</label><textarea id="f_desc" placeholder="Coach name, team members, venue, any extra context…"></textarea></div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="submitAchievement()">SUBMIT ACHIEVEMENT</button>
+          <span id="formStatus" style="font-size:.85rem;color:var(--muted)"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW ALL -->
+    <div class="psec" id="psec-view">
+      <div class="sec-title">All Achievements</div>
+      <p class="sec-desc">Students are grouped by registration number — expand to see all their achievements</p>
+      <div class="filter-bar">
+        <div class="fg">
+          <label>Student Name / Reg No.</label>
+          <input id="flt_name" type="text" placeholder="Name or registration no…" onkeydown="if(event.key==='Enter')searchAchievements()"/>
+        </div>
+        <div class="fg">
+          <label>Sport</label>
+          <select id="flt_sport" style="appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a7080' d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;background-color:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--fb);font-size:.93rem;padding-top:10px;padding-bottom:10px;padding-left:14px;outline:none;width:100%">
+            <option value="">All Sports</option>
+            <option value="Cricket">🏏 Cricket</option><option value="Football">⚽ Football</option>
+            <option value="100m Dash">🏃 100m Dash</option><option value="500m Dash">🏃 500m Dash</option>
+            <option value="Shot Put">🥏 Shot Put</option><option value="Long Jump">🦘 Long Jump</option>
+            <option value="Chess">♟️ Chess</option><option value="Carrom">🎯 Carrom</option>
+            <option value="Volleyball">🏐 Volleyball</option><option value="Hockey">🏑 Hockey</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Level</label>
+          <select id="flt_level" style="appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a7080' d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;background-color:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--fb);font-size:.93rem;padding-top:10px;padding-bottom:10px;padding-left:14px;outline:none;width:100%">
+            <option value="">All Levels</option>
+            <option>School Level</option><option>College Level</option><option>Inter-College</option>
+            <option>District Level</option><option>State Level</option><option>National Level</option>
+            <option>International Level</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Class</label>
+          <input id="flt_class" type="text" placeholder="e.g. CSE-A" onkeydown="if(event.key==='Enter')searchAchievements()"/>
+        </div>
+        <button class="btn btn-primary" onclick="searchAchievements()">SEARCH</button>
+        <button class="btn btn-ghost" style="width:auto;margin:0;padding:10px 16px;font-size:.8rem" onclick="resetSearch()">RESET</button>
+      </div>
+      <div id="achContainer"><div class="spinner-wrap"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="psec" id="psec-leaderboard">
+      <div class="sec-title">Stats &amp; Leaders</div>
+      <p class="sec-desc">Performance overview across all sports</p>
+      <div class="stats-panels">
+        <div class="panel">
+          <div class="panel-title">Achievements by Sport</div>
+          <div class="bar-rows" id="chartBySport"><div class="spinner-wrap"><div class="spinner"></div></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Achievements by Level</div>
+          <div class="bar-rows" id="chartByLevel"><div class="spinner-wrap"><div class="spinner"></div></div></div>
+        </div>
+        <div class="panel" style="grid-column:1/-1">
+          <div class="panel-title">Recent Medal Winners</div>
+          <div id="winnersTable"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /portal-content -->
+</div><!-- /screen-portal -->
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">MODIFY ACHIEVEMENT</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit_id"/>
+      <div class="form-grid">
+        <div class="fg"><label>Student Name *</label><input id="e_name" type="text"/></div>
+        <div class="fg"><label>Registration Number *</label><input id="e_roll" type="text" maxlength="15"/></div>
+        <div class="fg">
+          <label>Batch Year *</label>
+          <select id="e_batch">
+            <option value="">— Select Batch —</option>
+            <option>2018-2022</option><option>2019-2023</option><option>2020-2024</option>
+            <option>2021-2025</option><option>2022-2026</option><option>2023-2027</option>
+            <option>2024-2028</option><option>2025-2029</option><option>2026-2030</option>
+            <option>2027-2031</option><option>2028-2032</option>
+          </select>
+        </div>
+        <div class="fg"><label>Class / Section *</label><input id="e_class" type="text"/></div>
+        <div class="fg">
+          <label>Competition Level *</label>
+          <select id="e_level">
+            <option value="">— Select Level —</option>
+            <option>School Level</option><option>College Level</option><option>Inter-College</option>
+            <option>District Level</option><option>State Level</option><option>National Level</option>
+            <option>International Level</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Sport *</label>
+          <select id="e_sport" onchange="onEditSportChange()">
+            <option value="">— Select Sport —</option>
+            <option value="Cricket">🏏 Cricket</option>
+            <option value="Football">⚽ Football</option>
+            <option value="100m Dash">🏃 100m Dash</option>
+            <option value="500m Dash">🏃 500m Dash</option>
+            <option value="Shot Put">🥏 Shot Put</option>
+            <option value="Long Jump">🦘 Long Jump</option>
+            <option value="Chess">♟️ Chess</option>
+            <option value="Carrom">🎯 Carrom</option>
+            <option value="Volleyball">🏐 Volleyball</option>
+            <option value="Hockey">🏑 Hockey</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Category *</label>
+          <select id="e_category">
+            <option value="">— Select Category —</option>
+            <option>Individual</option><option>Team</option><option>Mixed</option>
+          </select>
+        </div>
+        <div class="fg full"><label>Achievement *</label><input id="e_achievement" type="text"/></div>
+        <div class="fg">
+          <label>Position / Medal</label>
+          <select id="e_position">
+            <option value="">Participant / None</option>
+            <option>1st Place / Gold</option><option>2nd Place / Silver</option><option>3rd Place / Bronze</option>
+            <option>4th Place</option><option>Semi-Finalist</option><option>Finalist</option>
+            <option>Best Player</option><option>Most Valuable Player</option>
+          </select>
+        </div>
+        <div class="fg"><label id="eScoreLbl">Score / Result</label><input id="e_score" type="text"/></div>
+        <div class="fg"><label>Event Name</label><input id="e_event" type="text"/></div>
+        <div class="fg"><label>Event Date</label><input id="e_date" type="date"/></div>
+        <div class="fg full">
+          <label>Additional Details</label>
+          <textarea id="e_desc" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--fb);font-size:.93rem;padding:10px 14px;outline:none;width:100%;resize:vertical;min-height:80px;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveEdit()">SAVE CHANGES</button>
+      <button class="btn btn-ghost" onclick="closeEditModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
