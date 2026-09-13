@@ -22,11 +22,31 @@ test('health endpoint responds', async () => {
   assert.equal(data.status, 'ok');
 });
 
+test('frontend shell is served', async () => {
+  const response = await fetch(`${base}/`);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /SportLog — SRM Student Achievement Portal/);
+  assert.match(html, /js\/app\.js/);
+});
+
 test('unknown API route returns JSON 404', async () => {
   const response = await fetch(`${base}/achievements/nope/nope`);
   assert.equal(response.status, 404);
   const data = await response.json();
   assert.equal(data.success, false);
+});
+
+test('stats endpoint returns stable arrays and numeric totals', async () => {
+  const response = await fetch(`${base}/stats`);
+  assert.equal(response.status, 200);
+  const data = await response.json();
+  assert.equal(data.success, true);
+  assert.equal(typeof data.data.totalAchievements, 'number');
+  assert.equal(typeof data.data.totalStudents, 'number');
+  assert.ok(Array.isArray(data.data.bySport));
+  assert.ok(Array.isArray(data.data.byLevel));
+  assert.ok(Array.isArray(data.data.recentWinners));
 });
 
 test('signup validates SRM email and registration number', async () => {
